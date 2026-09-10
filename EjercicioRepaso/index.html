@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repaso: Fundamentos de Machine Learning y Datos</title>
+    <title>Repaso: Fundamentos de Analítica de Datos y Automatización</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -151,9 +151,9 @@
         <!-- PANTALLA INICIAL -->
         <div id="screen-start" class="scroll-content flex flex-col items-center justify-center text-center animate__animated animate__fadeIn">
             <span class="px-4 py-1.5 bg-[#f3f2fc] text-custom font-bold text-xs uppercase tracking-widest rounded-full mb-4">Evaluación de Repaso</span>
-            <h1 class="text-4xl font-bold text-custom mb-3 leading-tight">Fundamentos de Machine Learning y Datos</h1>
-            <p class="text-2xl mb-5 text-slate-700 font-semibold">Integración, Entrenamiento y Algoritmos</p>
-            <p class="mb-10 max-w-2xl text-slate-600 text-lg">Evalúa tus conocimientos sobre la integración de múltiples fuentes de datos, partición y métricas de evaluación.</p>
+            <h1 class="text-4xl font-bold text-custom mb-3 leading-tight">Fundamentos de Analítica de Datos</h1>
+            <p class="text-2xl mb-5 text-slate-700 font-semibold">Integración, Automatización y Proyectos</p>
+            <p class="mb-10 max-w-2xl text-slate-600 text-lg">Pon a prueba tus conocimientos sobre integración de múltiples fuentes, automatización con scripts y flujos de trabajo analíticos.</p>
             <button onclick="startQuiz()" class="btn-action text-xl shadow-lg">INICIAR REPASO</button>
         </div>
 
@@ -177,7 +177,7 @@
 
                 <div id="matching-container" class="hidden space-y-6">
                     <div class="p-4 bg-white/60 border border-white rounded-2xl text-center shadow-sm">
-                        <p class="text-xs font-bold mb-3 uppercase text-slate-500 tracking-wider">Conceptos disponibles (arrastre o haga clic para seleccionar):</p>
+                        <p class="text-xs font-bold mb-3 uppercase text-slate-500 tracking-wider">Elementos disponibles (arrastre o haga clic para seleccionar):</p>
                         <div id="concept-bank" class="flex flex-wrap justify-center gap-3 min-h-[60px]"></div>
                     </div>
                     
@@ -231,36 +231,36 @@
             {
                 type: "vf",
                 instruction: "Seleccione Verdadero o Falso",
-                question: "1. La integración de datos provenientes de múltiples fuentes es un proceso clave para consolidar información y facilitar la construcción de modelos analíticos más representativos.",
+                question: "1. La integración de datos provenientes de múltiples fuentes en un proyecto de analítica permite consolidar información diversa, lo que facilita la construcción de modelos analíticos más completos y representativos del fenómeno estudiado.",
                 options: [
                     {t: "Verdadero", c: true},
                     {t: "Falso", c: false}
                 ],
-                feedback: "La integración de datos permite unificar diferentes fuentes heterogéneas para generar una vista consolidada y coherente, lo cual es fundamental para alimentar modelos analíticos y de Machine Learning con información robusta y representativa."
+                feedback: "La integración de datos es una etapa fundamental dentro de los proyectos de analítica. Permite combinar información proveniente de diferentes sistemas, archivos ou servicios externos para generar una visión más completa del problema. Al integrar múltiples fuentes, se incrementa la calidad del análisis y se mejora la capacidad de los modelos analíticos para identificar patrones, relaciones y tendencias relevantes."
             },
             {
                 type: "ms",
                 instruction: "Seleccione la respuesta correcta",
-                question: "2. ¿Cuál es el propósito principal de dividir un conjunto de datos en datos de entrenamiento y datos de prueba en un proceso de Machine Learning?",
+                question: "2. En un proceso de analítica de datos con Python, ¿cuál es el principal propósito de automatizar tareas de análisis mediante scripts?",
                 options: [
-                    {t: "a) Reducir el tamaño del conjunto de datos para acelerar el procesamiento.", c: false},
-                    {t: "b) Permitir que el modelo aprenda con una parte de los datos y evaluar su desempeño con datos que no utilizó durante el entrenamiento.", c: true},
-                    {t: "c) Eliminar valores atípicos antes de entrenar el modelo.", c: false},
-                    {t: "d) Garantizar que el modelo siempre obtenga resultados correctos.", c: false}
+                    {t: "a) Eliminar completamente la necesidad de preparar datos antes del análisis.", c: false},
+                    {t: "b) Ejecutar procesos repetitivos de análisis de manera eficiente, reduciendo errores manuales y optimizando el tiempo de procesamiento.", c: true},
+                    {t: "c) Sustituir el uso de modelos analíticos en los proyectos de datos.", c: false},
+                    {t: "d) Evitar la interpretación de resultados obtenidos en el análisis.", c: false}
                 ],
-                feedback: "La separación entre datos de entrenamiento y prueba permite evaluar la capacidad de generalización del modelo. Si el modelo funciona bien con datos que no fueron utilizados durante el entrenamiento, es más probable que pueda realizar predicciones confiables en escenarios reales."
+                feedback: "La automatización mediante scripts en Python permite ejecutar procesos de análisis de forma sistemática y reproducible. Esto facilita la manipulación de grandes volúmenes de datos, la ejecución periódica de análisis y la reducción de errores asociados a tareas manuales. Sin embargo, la automatización no elimina la necesidad de preparación de datos ni reemplaza el análisis interpretativo de los resultados."
             },
             {
                 type: "match",
                 instruction: "Relacione cada concepto con su definición correspondiente",
-                question: "3. Empareje cada uno de los elementos con su definición correcta:",
+                question: "3. Empareje cada elemento con su definición correcta:",
                 pairs: [
-                    { id: "p1", concept: "Regresión", desc: "b. Técnica de aprendizaje supervisado utilizada para predecir valores numéricos continuos." },
-                    { id: "p2", concept: "Clasificación", desc: "d. Técnica de aprendizaje supervisado utilizada para asignar una observación a una categoría o clase." },
-                    { id: "p3", concept: "Evaluación de modelo", desc: "a. Proceso de medir el desempeño de un modelo utilizando métricas que permiten analizar su precisión o capacidad predictiva." },
-                    { id: "p4", concept: "Scikit-learn", desc: "c. Biblioteca de Python utilizada para implementar algoritmos de Machine Learning y análisis predictivo." }
+                    { id: "p1", concept: "Integración de datos", desc: "Proceso de combinar información proveniente de diferentes fuentes de datos para construir un conjunto de datos unificado y consistente para el análisis." },
+                    { id: "p2", concept: "Automatización del análisis", desc: "Uso de scripts o programas que permiten ejecutar tareas de procesamiento y análisis de datos de manera automática y repetible." },
+                    { id: "p3", concept: "Proyecto de analítica aplicada", desc: "Proceso mediante el cual se analizan los resultados obtenidos para identificar patrones, conclusiones y posibles implicaciones para la toma de decisiones." },
+                    { id: "p4", concept: "Interpretación de resultados", desc: "Desarrollo de un trabajo práctico donde se aplican técnicas de analítica de datos para resolver un problema real utilizando herramientas computacionales." }
                 ],
-                feedback: "Los modelos de regresión permiten predecir valores numéricos, mientras que los modelos de clasificación asignan categorías a los datos. La evaluación de modelos permite medir su desempeño mediante métricas apropiadas, y herramientas como Scikit-learn facilitan la implementación de estos algoritmos dentro de entornos de análisis de datos en Python."
+                feedback: "Cada etapa del proceso de analítica cumple un rol específico dentro del flujo de trabajo analítico. La integración de datos permite consolidar información, la automatización facilita la ejecución eficiente de procesos analíticos, la interpretación de resultados transforma los datos en conocimiento útil y el proyecto de analítica aplicada integra todas estas etapas para resolver problemas reales mediante el análisis de datos."
             }
         ];
 
@@ -538,11 +538,11 @@
             const msg = document.getElementById('result-msg');
             
             if (percent === 100) {
-                msg.innerText = "¡Excelente! Dominas perfectamente la integración de múltiples fuentes de datos, los fundamentos de Machine Learning y las técnicas de evaluación.";
+                msg.innerText = "¡Excelente! Comprendes a la perfección la integración de fuentes de datos, la automatización y los proyectos analíticos.";
             } else if (percent >= 70) {
-                msg.innerText = "¡Muy buen trabajo! Tienes claros los conceptos clave de la integración y el aprendizaje automático, aunque vale la pena repasar algunos detalles puntuales.";
+                msg.innerText = "¡Muy buen trabajo! Tienes claros los conceptos centrales, aunque conviene repasar algunos detalles específicos del emparejamiento.";
             } else {
-                msg.innerText = "Te sugerimos repasar los propósitos de la integración de fuentes de datos, las fases de entrenamiento y las librerías especializadas.";
+                msg.innerText = "Te sugerimos repasar los propósitos de la integración de fuentes, la automatización por scripts y las definiciones conceptuales.";
             }
 
             buildSummaryCards();
