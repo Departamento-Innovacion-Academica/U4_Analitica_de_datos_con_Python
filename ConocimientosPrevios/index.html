@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conocimientos Previos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-soft: #a394ff;
+            --secondary-soft: #6352cf;
+            --bg-dark: #120e2e;
+            --card-front-bg: linear-gradient(135deg, #2a2060, #1b1440);
+            --card-back-bg: #150f38;
+            --accent-glow: rgba(163, 148, 255, 0.4);
+            --text-main: #f0edff;
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2f2575 0%, #120e2e 70%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 80px 20px 40px;
+            box-sizing: border-box;
+        }
+
+        .instruction {
+            position: fixed;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(163, 148, 255, 0.3);
+            color: var(--primary-soft);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            animation: floatAnim 4s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes floatAnim {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .grid-knowledge {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 30px 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Front Side */
+        .flip-card-front {
+            background: var(--card-front-bg);
+            border: 1px solid rgba(163, 148, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .flip-card-front::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(163, 148, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            transition: var(--transition-smooth);
+        }
+
+        .flip-card:hover .flip-card-front {
+            border-color: var(--primary-soft);
+            box-shadow: 0 12px 35px var(--accent-glow);
+            transform: translateY(-4px);
+        }
+
+        .flip-card-front .card-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-soft);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            align-self: flex-start;
+            opacity: 0.8;
+        }
+
+        .flip-card-front h4 {
+            margin: auto 0;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.5;
+            z-index: 2;
+        }
+
+        .flip-card-front .click-hint {
+            font-size: 0.75rem;
+            color: var(--primary-soft);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        /* Back Side */
+        .flip-card-back {
+            background: var(--card-back-bg);
+            border: 1px solid var(--primary-soft);
+            color: #e5e1fc;
+            transform: rotateY(180deg);
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-y: auto;
+            justify-content: center;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .flip-card-back p {
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .flip-card-back::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .flip-card-back::-webkit-scrollbar-thumb {
+            background: rgba(163, 148, 255, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="instruction">haga clic sobre las tarjetas para ampliar la información</div>
+
+    <div class="grid-knowledge">
+        
+        <!-- Tarjeta 1 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">01</span>
+                    <h4>Fundamentos de análisis de datos</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>comprensión básica de cómo recolectar, organizar y analizar información utilizando herramientas computacionales para identificar patrones o tendencias en los datos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">02</span>
+                    <h4>Manejo básico de Python para análisis de datos</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>capacidad para trabajar con estructuras básicas del lenguaje y utilizar bibliotecas como Pandas, NumPy y Matplotlib para manipulación y visualización de datos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">03</span>
+                    <h4>Conceptos de análisis exploratorio de datos (EDA)</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>conocimiento de técnicas básicas para examinar conjuntos de datos, identificar relaciones entre variables, detectar valores atípicos y comprender la estructura de la información.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">04</span>
+                    <h4>Nociones básicas de Machine Learning</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>comprensión general de los conceptos de modelos predictivos, entrenamiento de modelos y evaluación de resultados dentro de un proceso de analítica de datos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 5 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">05</span>
+                    <h4>Interpretación de visualizaciones y resultados analíticos</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>capacidad para analizar gráficos, tablas y resultados generados por herramientas de análisis de datos, interpretando su significado dentro de un contexto específico.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 6 -->
+        <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <span class="card-number">06</span>
+                    <h4>Pensamiento analítico y resolución de problemas</h4>
+                    <div class="click-hint">Girar ↻</div>
+                </div>
+                <div class="flip-card-back">
+                    <p>disposición para formular preguntas a partir de los datos, interpretar resultados y proponer soluciones basadas en evidencia dentro de un proyecto de analítica aplicada.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleFlip(card) {
+            card.classList.toggle('flipped');
+        }
+    </script>
+
+</body>
+
+</html>
