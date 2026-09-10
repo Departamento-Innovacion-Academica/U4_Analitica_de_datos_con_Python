@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bases de Datos y APIs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-soft: #a394ff;
+            --secondary-soft: #6352cf;
+            --bg-dark: #120e2e;
+            --card-bg: linear-gradient(135deg, #2a2060, #1b1440);
+            --modal-bg: #18123c;
+            --accent-glow: rgba(163, 148, 255, 0.4);
+            --text-main: #f0edff;
+            --code-bg: #090717;
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Code Syntax Colors */
+            --code-comment: #6272a4;
+            --code-keyword: #ff79c6;
+            --code-string: #f1fa8c;
+            --code-function: #50fa7b;
+            --code-error: #ff5555;
+            --code-variable: #f8f8f2;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2f2575 0%, #120e2e 70%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 80px 20px 40px;
+            box-sizing: border-box;
+        }
+
+        .instruction {
+            position: fixed;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(163, 148, 255, 0.3);
+            color: var(--primary-soft);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            animation: floatAnim 4s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes floatAnim {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        @media (max-width: 650px) {
+            .grid-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(163, 148, 255, 0.25);
+            border-radius: 20px;
+            padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            min-height: 200px;
+            box-sizing: border-box;
+        }
+
+        .card:hover {
+            border-color: var(--primary-soft);
+            box-shadow: 0 12px 35px var(--accent-glow);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .card .btn-open {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-soft);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 7, 26, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+            z-index: 100;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            border: 1px solid var(--primary-soft);
+            border-radius: 24px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 35px 30px;
+            box-sizing: border-box;
+            position: relative;
+            transform: scale(0.9);
+            transition: var(--transition-smooth);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(163, 148, 255, 0.15);
+            border: none;
+            color: var(--primary-soft);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .modal-close:hover {
+            background: var(--primary-soft);
+            color: var(--bg-dark);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.35rem;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(163, 148, 255, 0.2);
+            padding-bottom: 12px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .modal-content p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #d8d3f8;
+            margin-bottom: 15px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .modal-content ul {
+            margin: 0 0 20px 0;
+            padding-left: 20px;
+            color: #d8d3f8;
+        }
+
+        .modal-content li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        /* Syntax Highlighted Code Blocks */
+        .code-block {
+            background-color: var(--code-bg);
+            border: 1px solid rgba(163, 148, 255, 0.25);
+            border-radius: 12px;
+            padding: 18px;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 0.88rem;
+            color: var(--code-variable);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            margin: 15px 0;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-comment { color: var(--code-comment); font-style: italic; }
+        .code-keyword { color: var(--code-keyword); font-weight: bold; }
+        .code-string { color: var(--code-string); }
+        .code-function { color: var(--code-function); }
+        .code-error { color: var(--code-error); font-weight: bold; }
+
+        .citation {
+            font-size: 0.85rem;
+            color: var(--primary-soft);
+            opacity: 0.8;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(163, 148, 255, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="instruction">haga clic sobre las tarjetas para ampliar la información</div>
+
+    <div class="grid-cards">
+        
+        <!-- Card 1 -->
+        <div class="card" onclick="openModal('modal-1')">
+            <h3>1.4.7 Retos frecuentes</h3>
+            <div class="btn-open">Ver detalle ↗</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card" onclick="openModal('modal-2')">
+            <h3>1.4.8 Buenas prácticas</h3>
+            <div class="btn-open">Ver detalle ↗</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" onclick="openModal('modal-3')">
+            <h3>1.4.9 Ejemplo integrado</h3>
+            <div class="btn-open">Ver detalle ↗</div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card" onclick="openModal('modal-4')">
+            <h3>1.4.10 Importancia estratégica</h3>
+            <div class="btn-open">Ver detalle ↗</div>
+        </div>
+
+    </div>
+
+    <!-- Modal 1 -->
+    <div class="modal-overlay" id="modal-1" onclick="closeModalOnOverlay(event, 'modal-1')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-1')">✕</button>
+            <h3>1.4.7 Retos frecuentes</h3>
+            <p>Al trabajar con bases de datos y APIs pueden surgir dificultades como:</p>
+            <ul>
+                <li>Credenciales de acceso.</li>
+                <li>Límites de consultas por minuto.</li>
+                <li>Cambios en estructura de respuesta.</li>
+                <li>Lentitud de red.</li>
+                <li>Datos incompletos.</li>
+                <li>Errores de conexión.</li>
+            </ul>
+            <p>Ejemplo:</p>
+            <div class="code-block"><span class="code-error">ConnectionError</span></div>
+            <p>Por ello se recomienda manejo de errores y validaciones.</p>
+            <div class="citation">(Requests Authors, 2024)</div>
+        </div>
+    </div>
+
+    <!-- Modal 2 -->
+    <div class="modal-overlay" id="modal-2" onclick="closeModalOnOverlay(event, 'modal-2')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-2')">✕</button>
+            <h3>1.4.8 Buenas prácticas</h3>
+            <p>Se recomienda:</p>
+            <ul>
+                <li>No incluir contraseñas en código plano.</li>
+                <li>Usar variables de entorno.</li>
+                <li>Consultar solo columnas necesarias.</li>
+                <li>Documentar endpoints de API.</li>
+                <li>Validar formatos recibidos.</li>
+                <li>Registrar fecha y hora de extracción.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal 3 -->
+    <div class="modal-overlay" id="modal-3" onclick="closeModalOnOverlay(event, 'modal-3')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-3')">✕</button>
+            <h3>1.4.9 Ejemplo integrado</h3>
+            <div class="code-block"><span class="code-comment"># Ventas internas desde base de datos</span>
+ventas = pd.<span class="code-function">read_sql</span>(<span class="code-string">"SELECT id_cliente, total FROM ventas"</span>, engine)
+
+<span class="code-comment"># Datos externos desde API</span>
+usuarios = pd.<span class="code-function">DataFrame</span>(requests.<span class="code-function">get</span>(url).<span class="code-function">json</span>())
+
+<span class="code-comment"># Integración</span>
+df = ventas.<span class="code-function">merge</span>(usuarios, left_on=<span class="code-string">"id_cliente"</span>, right_on=<span class="code-string">"id"</span>)</div>
+            <p>Este ejemplo combina una fuente interna y una externa.</p>
+            <div class="citation">(SQLAlchemy Authors, 2024)</div>
+        </div>
+    </div>
+
+    <!-- Modal 4 -->
+    <div class="modal-overlay" id="modal-4" onclick="closeModalOnOverlay(event, 'modal-4')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-4')">✕</button>
+            <h3>1.4.10 Importancia estratégica</h3>
+            <p>Integrar bases de datos y APIs permite responder preguntas como:</p>
+            <ul>
+                <li>¿Cómo afectan variables externas las ventas?</li>
+                <li>¿Qué clientes internos coinciden con campañas digitales?</li>
+                <li>¿Cómo combinar operaciones internas con datos del mercado?</li>
+            </ul>
+            <p>Estas capacidades fortalecen la analítica avanzada.</p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function closeModalOnOverlay(event, id) {
+            if (event.target === document.getElementById(id)) {
+                closeModal(id);
+            }
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
