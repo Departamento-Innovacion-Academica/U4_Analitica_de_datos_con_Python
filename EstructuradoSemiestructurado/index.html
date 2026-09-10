@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructuras de Datos - Modal 3D</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #080911;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --cyan-glow: #00dfd8;
+            --purple-glow: #7928ca;
+            --pink-glow: #ff0080;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 60px 20px;
+        }
+
+        /* Luces de fondo dinámicas */
+        .bg-glow {
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 12s infinite alternate ease-in-out;
+        }
+
+        .glow-1 { top: -200px; left: -100px; background: var(--purple-glow); }
+        .glow-2 { bottom: -200px; right: -100px; background: var(--cyan-glow); opacity: 0.5; }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(40px, 30px); }
+        }
+
+        /* Indicador flotante superior */
+        .floating-instruction {
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                        0 0 15px rgba(0, 223, 216, 0.2);
+            animation: floatBanner 3s ease-in-out infinite;
+        }
+
+        .floating-instruction i {
+            color: var(--cyan-glow);
+            font-size: 1.1rem;
+            animation: clickPulse 1.5s infinite;
+        }
+
+        @keyframes floatBanner {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes clickPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* Tarjetas Principales */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            max-width: 1000px;
+            width: 100%;
+            z-index: 1;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 40px;
+            width: 420px;
+            min-height: 380px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            transition: all 0.4s;
+        }
+
+        .card:nth-child(1)::before { background: linear-gradient(90deg, var(--purple-glow), var(--pink-glow)); }
+        .card:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan-glow), #007cf0); }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02) rotateX(4deg);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
+                        0 0 30px rgba(121, 40, 202, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .card-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #a5b4fc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-title {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .card-preview {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-action {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--cyan-glow);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .card-action i {
+            transition: transform 0.3s;
+        }
+
+        .card:hover .card-action i {
+            transform: translateX(6px);
+        }
+
+        /* VENTANA MODAL 3D */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(4, 6, 14, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: rgba(18, 22, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 45px;
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
+                        0 0 50px rgba(121, 40, 202, 0.3);
+            transform: scale(0.7) rotateX(-20deg) translateY(50px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1) rotateX(0deg) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 25px; right: 25px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #ff0080;
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+
+        .modal-body {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .modal-body p {
+            margin-bottom: 20px;
+        }
+
+        .modal-section-title {
+            color: var(--cyan-glow);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px 0;
+        }
+
+        .modal-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .modal-list li {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #f1f5f9;
+        }
+
+        .modal-list li i {
+            color: var(--pink-glow);
+        }
+
+        /* Bloque de Código JSON */
+        .json-box {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: #e6edf3;
+            overflow-x: auto;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .json-key { color: #79c0ff; }
+        .json-string { color: #a5d6ff; }
+        .json-number { color: #d2a8ff; }
+
+        /* Custom Scrollbar */
+        .modal-container::-webkit-scrollbar { width: 8px; }
+        .modal-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .modal-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- Indicador flotante solicitado -->
+    <div class="floating-instruction">
+        <i class="fa-solid fa-hand-pointer"></i>
+        <span>Haga clic sobre las tarjetas para ampliar la información.</span>
+    </div>
+
+    <div class="container">
+
+        <!-- TARJETA 1.2.2 -->
+        <div class="card" onclick="openModal('modal-122')">
+            <div>
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <span class="card-tag">Sección 1.2.2</span>
+                </div>
+                <h2 class="card-title">Datos no estructurados</h2>
+                <p class="card-preview">
+                    No siguen una estructura tabular fija y suelen presentarse en formatos variados. Requieren técnicas avanzadas de procesamiento.
+                </p>
+            </div>
+            <div class="card-action">
+                <span>Ampliar información</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- TARJETA 1.2.3 -->
+        <div class="card" onclick="openModal('modal-123')">
+            <div>
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+                    <span class="card-tag">Sección 1.2.3</span>
+                </div>
+                <h2 class="card-title">Datos semiestructurados</h2>
+                <p class="card-preview">
+                    Entre ambos extremos, contienen cierta organización interna pero no bajo tablas rígidas. Muy comunes en la web moderna.
+                </p>
+            </div>
+            <div class="card-action">
+                <span>Ampliar información</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- VENTANA MODAL PARA 1.2.2 -->
+    <div class="modal-overlay" id="modal-122" onclick="closeModalOnOuterClick(event, 'modal-122')">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeModal('modal-122')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="modal-title">1.2.2 Datos no estructurados</h2>
+            <div class="modal-body">
+                <p>
+                    Los datos no estructurados no siguen una estructura tabular fija y suelen presentarse en formatos variados.
+                </p>
+                
+                <div class="modal-section-title">Ejemplos frecuentes:</div>
+                <ul class="modal-list">
+                    <li><i class="fa-solid fa-envelope"></i> Correos electrónicos</li>
+                    <li><i class="fa-solid fa-comments"></i> Comentarios en redes</li>
+                    <li><i class="fa-solid fa-image"></i> Imágenes</li>
+                    <li><i class="fa-solid fa-file-audio"></i> Audios</li>
+                    <li><i class="fa-solid fa-video"></i> Videos</li>
+                    <li><i class="fa-solid fa-file-pdf"></i> Documentos PDF</li>
+                    <li><i class="fa-solid fa-file-lines"></i> Texto libre</li>
+                </ul>
+
+                <p>
+                    Estos datos requieren técnicas adicionales para su procesamiento, como <strong>minería de texto</strong>, <strong>visión computacional</strong> o <strong>procesamiento de lenguaje natural (PLN)</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL PARA 1.2.3 -->
+    <div class="modal-overlay" id="modal-123" onclick="closeModalOnOuterClick(event, 'modal-123')">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeModal('modal-123')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="modal-title">1.2.3 Datos semiestructurados</h2>
+            <div class="modal-body">
+                <p>
+                    Entre ambos extremos existen los datos semiestructurados, que contienen cierta organización interna, aunque no bajo tablas rígidas.
+                </p>
+
+                <div class="modal-section-title">Ejemplos:</div>
+                <ul class="modal-list">
+                    <li><i class="fa-solid fa-brackets-curly"></i> JSON</li>
+                    <li><i class="fa-solid fa-code"></i> XML</li>
+                    <li><i class="fa-solid fa-list-check"></i> Logs de sistemas</li>
+                    <li><i class="fa-solid fa-file-code"></i> Archivos YAML</li>
+                </ul>
+
+                <p>
+                    Estos formatos son muy comunes en <strong>APIs</strong> y aplicaciones web modernas.
+                </p>
+
+                <div class="modal-section-title">Ejemplo JSON:</div>
+                <pre class="json-box"><code>{
+  <span class="json-key">"cliente"</span>: <span class="json-string">"Ana"</span>,
+  <span class="json-key">"ciudad"</span>: <span class="json-string">"Bogotá"</span>,
+  <span class="json-key">"compra"</span>: <span class="json-number">250</span>
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden'; // Evita scroll de fondo
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOnOuterClick(event, modalId) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeModal(modalId);
+            }
+        }
+
+        // Permitir cerrar modal presionando la tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
