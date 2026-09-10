@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecuación de Proceso Confiable</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px 10px;
+      overflow-x: hidden;
+    }
+
+    .instruction {
+      text-align: center;
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 25px;
+      font-style: italic;
+    }
+
+    /* Contenedor principal */
+    .flow-container {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: clamp(30px, 4vw, 50px) clamp(15px, 2vw, 30px);
+      width: 100%;
+      max-width: 1200px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .process-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .step-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      opacity: 0;
+    }
+
+    /* Tarjetas Hexagonales */
+    .card {
+      width: 100%;
+      max-width: 155px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: #f8fafc;
+      /* Forma de hexágono mediante clip-path */
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.08));
+      transition: transform 0.3s ease;
+      padding: 20px 10px;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.05);
+    }
+
+    /* Área de Ilustraciones SVG */
+    .icon-box {
+      height: 110px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-box svg {
+      width: 100px;
+      height: 100px;
+    }
+
+    .step-label {
+      margin-top: 12px;
+      font-size: clamp(12px, 1.1vw, 14px);
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    /* Conectores (+ y =) */
+    .operator-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      font-weight: 800;
+      opacity: 0;
+      flex-shrink: 0;
+      padding: 0 4px;
+    }
+
+    .plus-sign {
+      color: #22c55e; /* Verde brillante */
+    }
+
+    .equal-sign {
+      color: #3b82f6; /* Azul brillante */
+    }
+
+    /* Botón de Reinicio */
+    .btn-container {
+      text-align: center;
+      margin-top: 35px;
+    }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #ffffff;
+      border: none;
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-restart:hover {
+      background: linear-gradient(135deg, #334155, #1e293b);
+      transform: scale(1.06) translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-restart:active {
+      transform: scale(0.96);
+    }
+
+    /* ANIMACIONES */
+    @keyframes popBounce3D {
+      0% {
+        opacity: 0;
+        transform: scale3d(0.2, 0.2, 0.2) rotate(-12deg) translateY(-60px);
+      }
+      55% {
+        opacity: 1;
+        transform: scale3d(1.12, 1.12, 1.12) rotate(4deg) translateY(8px);
+      }
+      75% {
+        transform: scale3d(0.92, 0.92, 0.92) rotate(-2deg);
+      }
+      90% {
+        transform: scale3d(1.03, 1.03, 1.03) rotate(1deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1) rotate(0deg) translateY(0);
+      }
+    }
+
+    @keyframes operatorPop {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.4);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animate-card {
+      animation: popBounce3D 0.75s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+
+    .animate-operator {
+      animation: operatorPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @media (max-width: 850px) {
+      .process-flow { flex-direction: column; gap: 15px; }
+      .step-wrapper { width: 100%; max-width: 180px; }
+      .card { max-width: 180px; height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <p class="instruction">Haga clic sobre el botón "Reiniciar ▶" para repetir la animación.</p>
+
+  <div class="flow-container">
+    <div class="process-flow">
+      
+      <!-- Paso 1: CÓDIGO CLARO -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Desarrollador y Portátil -->
+              <circle cx="58" cy="30" r="9" fill="#78350f" />
+              <path d="M 46 45 C 46 36, 68 36, 68 45 L 64 62 L 48 62 Z" fill="#1e3a8a" />
+              <!-- Pantalla Laptop -->
+              <polygon points="12,28 38,22 38,55 12,50" fill="#cbd5e1" />
+              <polygon points="14,30 36,25 36,53 14,48" fill="#0f172a" />
+              <!-- Código colorido -->
+              <line x1="17" y1="33" x2="28" y2="31" stroke="#f59e0b" stroke-width="2" />
+              <line x1="17" y1="38" x2="32" y2="35" stroke="#38bdf8" stroke-width="2" />
+              <line x1="17" y1="43" x2="24" y2="41" stroke="#4ade80" stroke-width="2" />
+              <!-- Base Laptop y Manos -->
+              <polygon points="10,50 38,55 46,58 15,53" fill="#94a3b8" />
+              <path d="M 48 50 C 42 50, 38 48, 32 46" fill="none" stroke="#f3a47c" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Código<br>Claro</span>
+      </div>
+
+      <!-- Operador + -->
+      <div class="operator-container plus-sign">+</div>
+
+      <!-- Paso 2: VALIDACIÓN -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Mano Superior -->
+              <path d="M 65 20 C 65 20, 80 20, 85 28 L 60 40 L 45 35 Z" fill="#1e3a8a" />
+              <path d="M 48 34 L 38 32 C 35 38, 42 42, 48 40 Z" fill="#fbcfe8" />
+              <!-- Mano Inferior recibiendo -->
+              <path d="M 15 55 C 15 55, 30 55, 35 60 L 58 55 C 65 60, 60 68, 50 72 L 20 70 Z" fill="#fbcfe8" />
+              <path d="M 15 52 L 28 52 L 28 68 L 15 68 Z" fill="#1e3a8a" />
+              <!-- Icono Check Verde -->
+              <circle cx="48" cy="48" r="14" fill="#22c55e" />
+              <path d="M 41 48 L 46 53 L 55 43" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Validación</span>
+      </div>
+
+      <!-- Operador + -->
+      <div class="operator-container plus-sign">+</div>
+
+      <!-- Paso 3: LOGS -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Hojas de Log traseras -->
+              <rect x="20" y="22" width="38" height="48" rx="3" fill="#d97706" />
+              <rect x="25" y="26" width="38" height="48" rx="3" fill="#f59e0b" />
+              <!-- Hoja principal -->
+              <rect x="30" y="30" width="38" height="48" rx="3" fill="#fef3c7" />
+              <!-- Texto LOG -->
+              <text x="36" y="42" font-size="9" font-weight="800" fill="#78350f">LOG</text>
+              <!-- Líneas de Log -->
+              <line x1="36" y1="47" x2="60" y2="47" stroke="#b45309" stroke-width="2" />
+              <line x1="36" y1="52" x2="62" y2="52" stroke="#b45309" stroke-width="2" />
+              <line x1="36" y1="57" x2="55" y2="57" stroke="#b45309" stroke-width="2" />
+              <line x1="36" y1="62" x2="58" y2="62" stroke="#b45309" stroke-width="2" />
+              <line x1="36" y1="67" x2="50" y2="67" stroke="#b45309" stroke-width="2" />
+              <!-- Lupa -->
+              <circle cx="62" cy="52" r="13" fill="#e0f2fe" fill-opacity="0.7" stroke="#475569" stroke-width="3" />
+              <line x1="72" y1="62" x2="85" y2="75" stroke="#d97706" stroke-width="5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Logs</span>
+      </div>
+
+      <!-- Operador + -->
+      <div class="operator-container plus-sign">+</div>
+
+      <!-- Paso 4: SEGURIDAD -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Arco del Candado -->
+              <path d="M 32 48 L 32 32 A 18 18 0 0 1 68 32 L 68 48" fill="none" stroke="#64748b" stroke-width="9" stroke-linecap="round" />
+              <!-- Cuerpo del Candado -->
+              <rect x="24" y="44" width="52" height="42" rx="6" fill="#ef4444" stroke="#b91c1c" stroke-width="3" />
+              <!-- Cerradura -->
+              <circle cx="50" cy="60" r="5" fill="#475569" />
+              <polygon points="47,62 53,62 55,73 45,73" fill="#475569" />
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Seguridad</span>
+      </div>
+
+      <!-- Operador + -->
+      <div class="operator-container plus-sign">+</div>
+
+      <!-- Paso 5: MONITOREO -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Servidores Stack -->
+              <rect x="22" y="24" width="44" height="12" rx="2" fill="#7e22ce" />
+              <circle cx="27" cy="30" r="1.5" fill="#a855f7" />
+              <circle cx="32" cy="30" r="1.5" fill="#a855f7" />
+              
+              <rect x="22" y="39" width="44" height="12" rx="2" fill="#7e22ce" />
+              <circle cx="27" cy="45" r="1.5" fill="#a855f7" />
+              <circle cx="32" cy="45" r="1.5" fill="#a855f7" />
+
+              <rect x="22" y="54" width="44" height="12" rx="2" fill="#7e22ce" />
+              <circle cx="27" cy="60" r="1.5" fill="#a855f7" />
+              <circle cx="32" cy="60" r="1.5" fill="#a855f7" />
+
+              <rect x="22" y="69" width="44" height="12" rx="2" fill="#7e22ce" />
+              <circle cx="27" cy="75" r="1.5" fill="#a855f7" />
+              <circle cx="32" cy="75" r="1.5" fill="#a855f7" />
+
+              <!-- Flechas de crecimiento rosa/púrpura -->
+              <path d="M 30 35 L 30 18 M 26 22 L 30 18 L 34 22" stroke="#c084fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 48 30 L 48 12 M 43 17 L 48 12 L 53 17" stroke="#c084fc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M 70 75 L 70 42 M 63 49 L 70 42 L 77 49" stroke="#c084fc" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Monitoreo</span>
+      </div>
+
+      <!-- Operador = -->
+      <div class="operator-container equal-sign">=</div>
+
+      <!-- Paso 6: PROCESO CONFIABLE -->
+      <div class="step-wrapper">
+        <div class="card">
+          <div class="icon-box">
+            <svg viewBox="0 0 100 100">
+              <!-- Escudo de protección -->
+              <path d="M 50 12 C 68 12, 85 18, 85 18 C 85 55, 68 78, 50 88 C 32 78, 15 55, 15 18 C 15 18, 32 12, 50 12 Z" fill="#0e7490" />
+              <path d="M 50 16 C 65 16, 80 21, 80 21 C 80 52, 65 73, 50 82 C 35 73, 20 52, 20 21 C 20 21, 35 16, 50 16 Z" fill="#06b6d4" />
+              <path d="M 50 20 L 50 78 C 62 70, 75 50, 75 24 C 75 24, 62 20, 50 20 Z" fill="#67e8f9" />
+              
+              <!-- Mano con Manito Arriba (Like) -->
+              <g transform="translate(32, 32) scale(0.38)">
+                <path d="M 20 40 L 32 40 L 32 80 L 20 80 Z" fill="#4ade80" stroke="#15803d" stroke-width="3" />
+                <path d="M 32 48 L 50 20 C 55 12, 68 18, 62 30 L 56 40 L 82 40 C 92 40, 92 52, 85 58 C 92 62, 88 72, 80 75 C 85 80, 78 88, 68 88 L 32 88 Z" fill="#86efac" stroke="#15803d" stroke-width="4" stroke-linejoin="round" />
+              </g>
+            </svg>
+          </div>
+        </div>
+        <span class="step-label">Proceso<br>Confiable</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="btn-container">
+    <button class="btn-restart" id="btnRestart">
+      Reiniciar ▶
+    </button>
+  </div>
+
+  <script>
+    function triggerAnimations() {
+      const cards = document.querySelectorAll('.step-wrapper');
+      const operators = document.querySelectorAll('.operator-container');
+
+      cards.forEach(card => {
+        card.classList.remove('animate-card');
+        card.style.opacity = '0';
+      });
+      operators.forEach(op => {
+        op.classList.remove('animate-operator');
+        op.style.opacity = '0';
+      });
+
+      void document.body.offsetHeight;
+
+      let delay = 0;
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('animate-card');
+        }, delay);
+
+        if (operators[index]) {
+          setTimeout(() => {
+            operators[index].classList.add('animate-operator');
+          }, delay + 180);
+        }
+
+        delay += 250;
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', triggerAnimations);
+    document.getElementById('btnRestart').addEventListener('click', triggerAnimations);
+  </script>
+
+</body>
+</html>
